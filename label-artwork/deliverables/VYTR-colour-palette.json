@@ -1,0 +1,10 @@
+{
+  "status": "RGB design intent; printer-managed CMYK or spot colour matching required",
+  "colours": {
+    "navy": "#05265D",
+    "pink": "#F65BAA",
+    "cyan": "#00C5D2",
+    "red": "#FF1028",
+    "white": "#FFFFFF"
+  }
+}

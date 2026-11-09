@@ -1,0 +1,54 @@
+VYTR — BIG BEN CONCEPT / LABEL ARTWORK V1
+
+STATUS: DESIGN APPROVAL ONLY — NOT APPROVED FOR PRODUCTION
+
+This is a vector reconstruction from the supplied bottle concept, not a
+lossless extraction. The visible artwork has been approximated; the hidden
+side/rear artwork has been interpreted. Bottle highlights, condensation and
+photographic shadows have deliberately not been included as label artwork.
+The VYTR lettering uses an Arial Black-based approximation, not a verified
+original brand typeface. Please approve the lettering and shape match.
+
+FILES
+- VYTR-label-master-outlined.svg: recommended scalable master. Lettering is
+  vector paths; no installed font is required. Named groups separate the base,
+  ribbons, organic shapes, linework, white strip and lower heart.
+- VYTR-label-master-editable-text.svg: text remains editable. Uses Arial Bold
+  and Arial Black; appearance may vary if those fonts are unavailable. Use
+  the outlined master as the appearance reference.
+- VYTR-label-approval-proof.pdf: A4 landscape vector approval sheet; artwork
+  is shown at the provisional physical size. Notes are outside the artwork.
+- VYTR-label-preview-300ppi.png: 2480 x 1654 pixel full-wrap preview at 300 ppi.
+  Rounded pixel dimensions approximate 210 x 140 mm. Use SVG for resizing.
+- VYTR-front-detail-preview.png: central 70 mm-wide detail for visual review.
+  This is a crop for viewing, not a separate production label.
+- VYTR-colour-palette.json: RGB/hex design colours.
+
+WORKING SIZE
+210 mm wide x 140 mm high. Arbitrary provisional dimensions only; no fit to
+any bottle is claimed. SVG viewBox is 2100 x 1400. The central artwork faces
+front; edges are not an approved seam or overlap. Do not print a production
+run from these dimensions.
+
+RESIZING
+Open the SVG in a vector editor. Scale proportionally for a size with the
+same aspect ratio. If the printer's template has a different aspect ratio,
+resize the canvas and rearrange/extend the coloured elements. Keep the logo,
+hearts and lettering proportional; do not stretch the entire design to fit.
+The generator in the parent folder can regenerate the initial files.
+
+BEFORE PRODUCTION
+Obtain the supplier's flat template, trim size, material, seam/overlap and
+application direction. Confirm whether this is a wrap label or shrink sleeve.
+Sleeves may need a supplier-applied distortion map, not simple resizing.
+Have final packaging copy supplied and reviewed; no barcode, volume, source
+details, operator details or other back-panel information has been invented.
+The front claim wording reproduces the concept and has not been verified.
+This draft has no barcode, final back panel, production bleed, cut contour,
+white-ink plate, CMYK output profile or PDF/X certification.
+Ask the printer for its requirements and apply them to the final artwork.
+Request a physical colour proof, particularly for the pink and turquoise:
+screen RGB colours may need spot inks to reproduce closely.
+
+No crop marks or bleed have been baked into the artwork master. These will
+be set from the final template rather than assumed now.

@@ -1,21 +1,35 @@
-const fs = require('fs');
-const path = require('path');
-const opentype = require('opentype.js');
-const PDFDocument = require('pdfkit');
-const SVGtoPDF = require('svg-to-pdfkit');
-const sharp = require('sharp');
-const out = path.join(__dirname, 'deliverables');
+const fs = require("fs");
+const path = require("path");
+const opentype = require("opentype.js");
+const PDFDocument = require("pdfkit");
+const SVGtoPDF = require("svg-to-pdfkit");
+const sharp = require("sharp");
+const out = path.join(__dirname, "deliverables");
 fs.mkdirSync(out, { recursive: true });
-const bold = opentype.parse(fs.readFileSync('C:/Windows/Fonts/arialbd.ttf').buffer);
-const black = opentype.parse(fs.readFileSync('C:/Windows/Fonts/ariblk.ttf').buffer);
-const colours = { navy:'#05265D',pink:'#F65BAA',cyan:'#00C5D2',red:'#FF1028',white:'#FFFFFF' };
-function lettering(value,x,y,width,height,font,editable=false){
-  const p=font.getPath(value,0,0,100);const b=p.getBoundingBox();
-  if(editable)return `<text x="${x}" y="${y+height}" textLength="${width}" lengthAdjust="spacingAndGlyphs" font-family="${font===black?'Arial Black':'Arial'}" font-weight="${font===black?'900':'700'}" font-size="${height/0.72}">${value}</text>`;
-  return `<path aria-label="${value}" transform="translate(${x} ${y}) scale(${width/(b.x2-b.x1)} ${height/(b.y2-b.y1)}) translate(${-b.x1} ${-b.y1})" d="${p.toPathData(3)}"/>`;
+const bold = opentype.parse(
+  fs.readFileSync("C:/Windows/Fonts/arialbd.ttf").buffer,
+);
+const black = opentype.parse(
+  fs.readFileSync("C:/Windows/Fonts/ariblk.ttf").buffer,
+);
+const colours = {
+  navy: "#05265D",
+  pink: "#F65BAA",
+  cyan: "#00C5D2",
+  red: "#FF1028",
+  white: "#FFFFFF",
+};
+function lettering(value, x, y, width, height, font, editable = false) {
+  const p = font.getPath(value, 0, 0, 100);
+  const b = p.getBoundingBox();
+  if (editable)
+    return `<text x="${x}" y="${y + height}" textLength="${width}" lengthAdjust="spacingAndGlyphs" font-family="${font === black ? "Arial Black" : "Arial"}" font-weight="${font === black ? "900" : "700"}" font-size="${height / 0.72}">${value}</text>`;
+  return `<path aria-label="${value}" transform="translate(${x} ${y}) scale(${width / (b.x2 - b.x1)} ${height / (b.y2 - b.y1)}) translate(${-b.x1} ${-b.y1})" d="${p.toPathData(3)}"/>`;
 }
-const heart=(x,y,s)=>`<path transform="translate(${x} ${y}) scale(${s})" fill="${colours.red}" d="M0 28 C-7 20 -28 7 -28 -8 C-28 -29 -7 -34 0 -18 C7 -34 28 -29 28 -8 C28 7 7 20 0 28Z"/>`;
-function svg(editable=false){return `<?xml version="1.0" encoding="UTF-8"?>
+const heart = (x, y, s) =>
+  `<path transform="translate(${x} ${y}) scale(${s})" fill="${colours.red}" d="M0 28 C-7 20 -28 7 -28 -8 C-28 -29 -7 -34 0 -18 C7 -34 28 -29 28 -8 C28 7 7 20 0 28Z"/>`;
+function svg(editable = false) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="210mm" height="140mm" viewBox="0 0 2100 1400" role="img" aria-labelledby="title description">
 <title id="title">VYTR — Big Ben concept label reconstruction</title><desc id="description">Provisional 210 by 140 millimetre wrap label. Reconstructed front and interpretive side artwork. RGB design proof, not production approved. No verified back-panel copy.</desc>
 <defs><clipPath id="trim"><rect width="2100" height="1400"/></clipPath></defs>
@@ -38,27 +52,111 @@ function svg(editable=false){return `<?xml version="1.0" encoding="UTF-8"?>
 </g>
 <g id="front-brand-strip" inkscape:groupmode="layer" inkscape:label="05 White front brand strip"><rect x="972" y="0" width="156" height="1065" fill="white"/>
 <g transform="translate(972 1065) rotate(-90)" fill="#000000">
-${lettering('VYTR',20,20,408,116,black,editable)}
-${heart(475,78,0.86)}
-${lettering('BRITISH NATURAL',575,30,420,25,bold,editable)}
-${lettering('SPRING WATER',575,65,420,25,bold,editable)}
-${lettering('LONDON',704,103,165,18,bold,editable)}
+${lettering("VYTR", 20, 20, 408, 116, black, editable)}
+${heart(475, 78, 0.86)}
+${lettering("BRITISH NATURAL", 575, 30, 420, 25, bold, editable)}
+${lettering("SPRING WATER", 575, 65, 420, 25, bold, editable)}
+${lettering("LONDON", 704, 103, 165, 18, bold, editable)}
 </g></g>
-<g id="lower-heart" inkscape:groupmode="layer" inkscape:label="06 Lower red heart">${heart(885,1240,1.2)}</g>
-</g></svg>`;}
-async function main(){
-const artwork=svg(false);fs.writeFileSync(path.join(out,'VYTR-label-master-outlined.svg'),artwork);fs.writeFileSync(path.join(out,'VYTR-label-master-editable-text.svg'),svg(true));
-await sharp(Buffer.from(artwork)).resize(2480,1654).withMetadata({density:300}).png().toFile(path.join(out,'VYTR-label-preview-300ppi.png'));
-const front=artwork.replace('width="210mm" height="140mm" viewBox="0 0 2100 1400"','width="70mm" height="140mm" viewBox="700 0 700 1400"');
-await sharp(Buffer.from(front)).resize(827,1654).withMetadata({density:300}).png().toFile(path.join(out,'VYTR-front-detail-preview.png'));
-const mm=72/25.4;
-await new Promise(resolve=>{const doc=new PDFDocument({size:'A4',layout:'landscape',margin:0,info:{Title:'VYTR label — provisional artwork proof',Subject:'RGB vector proof. Provisional dimensions only. Not approved for production.'}});const stream=fs.createWriteStream(path.join(out,'VYTR-label-approval-proof.pdf'));doc.pipe(stream);doc.fillColor(colours.navy).font('Helvetica-Bold').fontSize(18).text('VYTR / LABEL ARTWORK PROOF',20*mm,13*mm);doc.font('Helvetica').fontSize(9).text('BIG BEN CONCEPT RECONSTRUCTION  •  NOT APPROVED FOR PRODUCTION',20*mm,23*mm);
-SVGtoPDF(doc,artwork,43.5*mm,35*mm,{width:210*mm,height:140*mm,assumePt:true});
-doc.save().lineWidth(.4).strokeColor('#89939F').rect(43.5*mm,35*mm,210*mm,140*mm).stroke().restore();
-doc.font('Helvetica').fontSize(8).fillColor('#46536A').text('PROVISIONAL TRIM: 210 × 140 mm  |  RGB design proof  |  No production bleed or seam allowance applied',20*mm,182*mm);
-doc.text('Front rebuilt from visible reference. Hidden side/rear artwork is interpretive. Printer template and final packaging copy pending.',20*mm,188*mm);
-doc.end();stream.on('finish',resolve)});
-fs.writeFileSync(path.join(out,'VYTR-colour-palette.json'),JSON.stringify({status:'RGB design intent; printer-managed CMYK or spot colour matching required',colours},null,2));
-console.log('Created editable and outlined SVG masters, 300 ppi PNG, approval PDF and colour palette.');
+<g id="lower-heart" inkscape:groupmode="layer" inkscape:label="06 Lower red heart">${heart(885, 1240, 1.2)}</g>
+</g></svg>`;
 }
-main().catch(e=>{console.error(e);process.exit(1)});
+async function main() {
+  const artwork = svg(false);
+  fs.writeFileSync(path.join(out, "VYTR-label-master-outlined.svg"), artwork);
+  fs.writeFileSync(
+    path.join(out, "VYTR-label-master-editable-text.svg"),
+    svg(true),
+  );
+  await sharp(Buffer.from(artwork))
+    .resize(2480, 1654)
+    .withMetadata({ density: 300 })
+    .png()
+    .toFile(path.join(out, "VYTR-label-preview-300ppi.png"));
+  const front = artwork.replace(
+    'width="210mm" height="140mm" viewBox="0 0 2100 1400"',
+    'width="70mm" height="140mm" viewBox="700 0 700 1400"',
+  );
+  await sharp(Buffer.from(front))
+    .resize(827, 1654)
+    .withMetadata({ density: 300 })
+    .png()
+    .toFile(path.join(out, "VYTR-front-detail-preview.png"));
+  const mm = 72 / 25.4;
+  await new Promise((resolve) => {
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 0,
+      info: {
+        Title: "VYTR label — provisional artwork proof",
+        Subject:
+          "RGB vector proof. Provisional dimensions only. Not approved for production.",
+      },
+    });
+    const stream = fs.createWriteStream(
+      path.join(out, "VYTR-label-approval-proof.pdf"),
+    );
+    doc.pipe(stream);
+    doc
+      .fillColor(colours.navy)
+      .font("Helvetica-Bold")
+      .fontSize(18)
+      .text("VYTR / LABEL ARTWORK PROOF", 20 * mm, 13 * mm);
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .text(
+        "BIG BEN CONCEPT RECONSTRUCTION  •  NOT APPROVED FOR PRODUCTION",
+        20 * mm,
+        23 * mm,
+      );
+    SVGtoPDF(doc, artwork, 43.5 * mm, 35 * mm, {
+      width: 210 * mm,
+      height: 140 * mm,
+      assumePt: true,
+    });
+    doc
+      .save()
+      .lineWidth(0.4)
+      .strokeColor("#89939F")
+      .rect(43.5 * mm, 35 * mm, 210 * mm, 140 * mm)
+      .stroke()
+      .restore();
+    doc
+      .font("Helvetica")
+      .fontSize(8)
+      .fillColor("#46536A")
+      .text(
+        "PROVISIONAL TRIM: 210 × 140 mm  |  RGB design proof  |  No production bleed or seam allowance applied",
+        20 * mm,
+        182 * mm,
+      );
+    doc.text(
+      "Front rebuilt from visible reference. Hidden side/rear artwork is interpretive. Printer template and final packaging copy pending.",
+      20 * mm,
+      188 * mm,
+    );
+    doc.end();
+    stream.on("finish", resolve);
+  });
+  fs.writeFileSync(
+    path.join(out, "VYTR-colour-palette.json"),
+    JSON.stringify(
+      {
+        status:
+          "RGB design intent; printer-managed CMYK or spot colour matching required",
+        colours,
+      },
+      null,
+      2,
+    ),
+  );
+  console.log(
+    "Created editable and outlined SVG masters, 300 ppi PNG, approval PDF and colour palette.",
+  );
+}
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
